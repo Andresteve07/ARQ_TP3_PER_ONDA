@@ -46,7 +46,7 @@ module calculador_periodo(reloj_placa, flanco_pos_onda_cuad, valor_periodo, cont
 				cant_us = cant_us +1;
 				contador = 0;
 			end
-			else if(cant_us >= 4)//50
+			else if(cant_us >= 200)//50
 			begin
 				cant_ms = cant_ms +1;
 				cant_us = 0;
