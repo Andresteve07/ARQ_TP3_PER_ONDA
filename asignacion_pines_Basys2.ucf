@@ -1,0 +1,19 @@
+#NET "boton_placa" CLOCK_DEDICATED_ROUTE = FALSE;
+NET "reloj_FPGA" LOC = "B8";
+
+NET "onda_cuadrada" LOC = "C6";
+
+
+NET "cod7SEG<0>" LOC ="N13";
+NET "cod7SEG<1>" LOC ="M12";
+NET "cod7SEG<2>" LOC ="L13";
+NET "cod7SEG<3>" LOC ="P12";
+NET "cod7SEG<4>" LOC ="N11";
+NET "cod7SEG<5>" LOC ="N14";
+NET "cod7SEG<6>" LOC ="H12";
+NET "cod7SEG<7>" LOC ="L14";
+
+NET "pantallas<3>" LOC = "K14";
+NET "pantallas<2>" LOC = "M13";
+NET "pantallas<1>" LOC = "J12";
+NET "pantallas<0>" LOC = "F12";

@@ -22,7 +22,7 @@ module sincronizador(senial_externa, clock_FPGA, senial_sincronizada);
 	input senial_externa, clock_FPGA;
 	output reg senial_sincronizada;
 	initial senial_sincronizada = 0;
-	always @(negedge clock_FPGA)
+	always @(negedge clock_FPGA)//por alguna razón es más preciso con negedge...
 	begin
 		senial_sincronizada = senial_externa;
 	end

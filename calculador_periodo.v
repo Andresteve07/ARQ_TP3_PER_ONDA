@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    16:00:20 09/12/2014 
+// Create Date:    22:11:25 10/28/2014 
 // Design Name: 
-// Module Name:    calculador_periodo 
+// Module Name:    cuenta_20ns_us 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,44 +18,35 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module calculador_periodo(reloj_placa, flanco_pos_onda_cuad, valor_periodo, contador);
-	input reloj_placa, flanco_pos_onda_cuad;
-	output reg [11:0] valor_periodo;
-	output reg [11:0] contador;
-	reg [9:0] cant_us, cant_ms;
-	initial valor_periodo = 0;
-	initial contador = 0;
-	initial cant_us = 0;
-	initial cant_ms = 0;
+module calculador_periodo(clock_FPGA, reset, periodo_us);
+	//periodo_us tendrá un valor máximo de 1000us según consigna
+	input clock_FPGA;
+	input wire reset;
+	output reg [11:0] periodo_us;//permitimos una cuenta máxima hasta 1023.
+	//pero el separador de cifras necesita 12bits
 	
-	always@(negedge reloj_placa, posedge flanco_pos_onda_cuad)
+	reg [5:0] cuenta_20ns;
+	reg [11:0] cuenta_us;
+	initial periodo_us = 0;
+	initial cuenta_20ns = 0;
+	initial cuenta_us = 0;
+	
+	always@ (posedge clock_FPGA)//or posedge reset
 	begin
-	
-		if(flanco_pos_onda_cuad)
+	//con reset síncrono, el flanco de subida del clock debe ocurrir
+	//primero para leer reset en "1"
+		if(reset)//si el reset dura más de un ciclo de clock se pierde el valor del periodo_us
 		begin
-			valor_periodo = cant_us;
-			contador = 0;
-			cant_us=0;
-			cant_ms=0;
+			periodo_us = cuenta_us;
+			cuenta_20ns = 0;
+			cuenta_us = 0;
 		end
-		
-		else
+		else if (cuenta_20ns >= 50)//probar con "5" pero el valor es "50"
 		begin
-			if(contador >= 2)//50
-			begin
-				cant_us = cant_us +1;
-				contador = 0;
-			end
-			else if(cant_us >= 200)//50
-			begin
-				cant_ms = cant_ms +1;
-				cant_us = 0;
-			end
-			else
-			contador = contador + 1;
+			cuenta_20ns = 0;
+			cuenta_us = cuenta_us + 1;
 		end
-		
+		else cuenta_20ns  = cuenta_20ns + 1;
 	end
-
-
+		
 endmodule

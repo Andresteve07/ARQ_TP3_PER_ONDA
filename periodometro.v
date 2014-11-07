@@ -34,10 +34,7 @@ module periodometro(onda_cuadrada, reloj_FPGA, cod7SEG, pantallas);
 	wire senial_sinc;
 	wire flanco_pos_onda_cuad;
 	wire [11:0] valor_periodo;
-	wire [11:0] contador;
-	wire [CANT_BITS+3:0]reg_cifras_BCD;
-	wire pulso_1ms;
-	wire [3:0] cable_cifra_BCD;
+	
 	
 	sincronizador sinc (.senial_externa(onda_cuadrada), 
 							  .clock_FPGA(reloj_FPGA),
@@ -47,25 +44,22 @@ module periodometro(onda_cuadrada, reloj_FPGA, cod7SEG, pantallas);
 						 .reset(1'b1), 
 						 .clock_FPGA(reloj_FPGA), 
 						 .flanco_pos_onda_cuad(flanco_pos_onda_cuad));
-	
+
+	calculador_periodo cont(.clock_FPGA(reloj_FPGA),
+				   .reset(flanco_pos_onda_cuad), 
+					.periodo_us(valor_periodo));
+	/*
 	calculador_periodo calc (.reloj_placa(reloj_FPGA),
 									 .flanco_pos_onda_cuad(flanco_pos_onda_cuad),
 									 .valor_periodo(valor_periodo),
 									 .contador(contador));
-	
-	conversor_RegNbits_RegBCD #(12) conv_Bin_BCD(.reg_binario(valor_periodo),
-															  .reg_BCD(reg_cifras_BCD));
-															  
-	reloj_ms #(1) reloj_1ms (.clock_FPGA(reloj_FPGA),
-									 .reloj_N_ms(pulso_1ms));													  
-
-	multiplexor_RegBCD #(CANT_CIFRAS_BCD,CANT_PANTALLAS) mux (.reg_cifrasBCD(reg_cifras_BCD),
-																		 .reloj_1ms(pulso_1ms),
-																		 .cifraBCD(cable_cifra_BCD),
-																		 .pantalla(pantallas));
-								  
-	conversor_BCD_7SEG conv_7seg (.cifraBCD(cable_cifra_BCD), 
-									      .cod7SEG(cod7SEG));
-	
+	*/
+	visualizadorNbits #(CANT_BITS,CANT_CIFRAS_BCD,CANT_PANTALLAS) viz(.regNbits(valor_periodo),
+																							.reloj_FPGA(reloj_FPGA),
+																							.cod7SEG(cod7SEG), 
+																							.pantallas(pantallas));
+	/*
+	Prueba con onda cuadrada de período 60 y ciclo de trababjo de 80% durante 800
+	*/
 	
 endmodule
